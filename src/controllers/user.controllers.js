@@ -3,10 +3,10 @@ import { User } from "../models/models.js";
 export async function getUsers(req, res) {
   try {
     const users = await User.findAll();
-    res.json(users);
+    return res.json(users);
   } catch (error) {
     console.log(`error: ${error}`);
-    res.status(500).json({ msg: error.msg });
+    return res.status(500).json({ msg: error.message });
   }
 }
 
@@ -14,9 +14,25 @@ export async function createUser(req, res) {
   try {
     const { username, email } = req.body;
     const user = User.create({ username, email });
-    res.status(201).json({ msg: "User successfully created" });
+    return res.status(201).json({ msg: "User successfully created" });
   } catch (error) {
     console.log("error", error);
-    res.status(500).json({ msg: error.msg });
+    res.status(500).json({ msg: error.message });
+  }
+}
+
+export async function getUser(req, res) {
+  try {
+    const id = parseInt(req.params.id);
+    const user = await User.findOne({
+      where: { id },
+    });
+    if (user) {
+      return res.json(user);
+    } else {
+      return res.status(404).json({ msg: `No user found with id: ${id}` });
+    }
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
   }
 }
