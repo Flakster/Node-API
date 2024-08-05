@@ -36,3 +36,26 @@ export async function getUser(req, res) {
     return res.status(500).json({ msg: error.message });
   }
 }
+
+export async function updateUser(req, res) {
+  try {
+    const id = req.params.id;
+    const { username, email } = req.body;
+    const user = await User.update(
+      {
+        username,
+        email,
+      },
+      {
+        where: { id },
+      }
+    );
+    if (user) {
+      return res.json({ msg: "User successfully updated" });
+    } else {
+      return res.status(404).json({ msg: `No user found with id: ${id}` });
+    }
+  } catch (error) {
+    return res.status(500).json({ msg: error.message });
+  }
+}
